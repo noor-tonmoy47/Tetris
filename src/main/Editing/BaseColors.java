@@ -1,4 +1,4 @@
-package Main.Editing;
+package main.Editing;
 
 public enum BaseColors {
 }

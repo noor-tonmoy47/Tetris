@@ -1,4 +1,4 @@
-package Main;
+package main;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,7 +14,7 @@ public class RightPanel extends JPanel {
         this.setBackground(Color.CYAN);
     }
 
-    public static RightPanel getINSTANCE() {
+    public static RightPanel getInstance() {
         return INSTANCE;
     }
 }

@@ -1,4 +1,4 @@
-package Main;
+package main;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,7 +15,7 @@ public class LeftPanel extends JPanel {
 
     }
 
-    public static LeftPanel getINSTANCE() {
+    public static LeftPanel getInstance() {
         return INSTANCE;
     }
 }

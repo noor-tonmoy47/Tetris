@@ -1,4 +1,6 @@
-package Main;
+package main;
+
+import controller.GameController;
 
 import javax.swing.*;
 import java.awt.*;
@@ -6,9 +8,11 @@ import java.awt.*;
 
 public class Start extends JFrame {
 
-    private GamePanel gamePanel = GamePanel.getINSTANCE();
-    private RightPanel rightPanel = RightPanel.getINSTANCE();
-    private LeftPanel leftPanel = LeftPanel.getINSTANCE();
+
+    private GameController gameController = GameController.getInstance();
+    private GamePanel gamePanel = GamePanel.getInstance();
+    private RightPanel rightPanel = RightPanel.getInstance();
+    private LeftPanel leftPanel = LeftPanel.getInstance();
 
     public Start() {
         this.setLayout(new BorderLayout());
