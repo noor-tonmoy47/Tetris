@@ -48,6 +48,10 @@ public class GameController {
         initHighScores();
     }
 
+    public static boolean isTileEmpty(Tile tile){
+        return tile == null;
+    }
+
     private void initHighScores() {
         try (FileInputStream fileInputStream = new FileInputStream(highScoresPath);
              ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream)) {
