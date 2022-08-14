@@ -1,5 +1,7 @@
 package controller;
 
+import main.LeftPanel;
+import object.Figure;
 import object.Player;
 import object.Tile;
 
@@ -50,6 +52,61 @@ public class GameController {
 
     public static boolean isTileEmpty(Tile tile){
         return tile == null;
+    }
+    public void start(){
+        if (!isGameOver && isGameRunning) {
+            if (!isPaused) {
+                if (canShapeStepDown(currentShape)) {
+                    stepDownShape(currentShape);
+                } else {
+                    writeShapeToGameMas(currentShape);
+                    scanAndClearRows(currentShape, gameMas);
+                    setCurrentShape(nextShape0);
+                    updateNextShapes();
+                    if (gameOver()) {
+                        isGameOver = true;
+                        for (int i = 0; i < highScores.length; i++) {
+                            if (highScores[i].getScore() < score) {
+                                if (i < highScores.length - 1) {
+                                    System.arraycopy(highScores, i, highScores, i + 1, highScores.length - i - 1);
+                                }
+                                highScores[i] = new Player("", score);
+                                isRecord = true;
+                                saveHighScoresToFile();
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        } else writeShapeToGameMas(currentShape);
+    }
+
+    private void updateNextShapes() {
+        nextShape0 = nextShape1;
+        nextShape1 = nextShape2;
+        nextShape2 = Figure.getRandomFigure();
+        LeftPanel.getInstance().repaint();
+    }
+
+    private void scanAndClearRows(Tile[][] currentShape, Tile[][] gameMas) {
+    }
+
+    public void stepDownShape(Tile[][] currentShape) {
+    }
+
+    private boolean gameOver() {
+        return false;
+    }
+
+    private void saveHighScoresToFile() {
+    }
+
+    private void writeShapeToGameMas(Tile[][] currentShape) {
+    }
+
+    public boolean canShapeStepDown(Tile[][] currentShape) {
+        return false;
     }
 
     private void initHighScores() {
@@ -192,5 +249,18 @@ public class GameController {
 
     public void setNextShape2(Tile[][] nextShape2) {
         this.nextShape2 = nextShape2;
+    }
+
+    public boolean canMoveShape(Direction left, Tile[][] currentShape) {
+        return false;
+    }
+
+    public void move(Direction left, Tile[][] currentShape) {
+    }
+
+    public void rotate(Tile[][] currentShape) {
+    }
+
+    public void resetGame() {
     }
 }

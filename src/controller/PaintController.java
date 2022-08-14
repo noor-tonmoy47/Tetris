@@ -30,4 +30,30 @@ public class PaintController {
     public static PaintController getInstance(){
         return INSTANCE;
     }
+
+    public void paintTetrisView(Graphics g) {
+    }
+
+    public void paintGameMas(Tile[][] gameMas, Graphics g) {
+    }
+
+    public void paintShape(Tile[][] shape, Graphics g) {
+        for (Tile[] aShape : shape) {
+            for (Tile anAShape : aShape) {
+                if (anAShape != null) paintTile(anAShape, g);
+            }
+        }
+    }
+
+    private void paintTile(Tile anAShape, Graphics g) {
+    }
+
+    public void paintPauseView(Graphics g) {
+    }
+
+    public void paintGameOverView(Graphics g) {
+    }
+
+    public void setShowRecordNameInput(boolean b) {
+    }
 }
