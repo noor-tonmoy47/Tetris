@@ -68,7 +68,7 @@ public class Figure {
         }
         return true;
     }
-    
+
     public static boolean isFirstColoumnIsFull(Tile[][] shape){
         for (Tile[] shapeY : shape){
             if (GameController.isTileEmpty(shapeY[0])) return false;
