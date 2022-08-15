@@ -30,7 +30,8 @@ public class Start extends JFrame {
         this.setLocationRelativeTo(null);
 
         this.setVisible(true);
-        addKeyListener(new KeyAdapter() {
+
+        this.addKeyListener(new KeyAdapter() {
 
             @Override
             public void keyPressed(KeyEvent e) {
