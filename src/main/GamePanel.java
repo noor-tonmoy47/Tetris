@@ -1,5 +1,8 @@
 package main;
 
+import controller.GameController;
+import controller.PaintController;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -10,21 +13,31 @@ public class GamePanel extends JPanel implements ActionListener {
     public static final int COLUMNS_COUNT = 10;
     public static final int BORDER_SIZE = 5;
     public static final int TILE_SIZE = 25;
-
-    private static final Color DARK_COLOR = Color.BLACK;
-
-    private static final Color FONT_COLOR =  Color.WHITE;
-//    private static final Color LIGHT_COLOR ;
-//    private static final Color LIGHT_COLOR2 ;
-    private static final GamePanel  INSTANCE = new GamePanel();
     public static final int PANEL_WIDTH = TILE_SIZE * COLUMNS_COUNT + BORDER_SIZE * 2;
 
     public static final int PANEL_HEIGHT = TILE_SIZE * ROW_COUNT + BORDER_SIZE * 2;
+    private static final Color DARK_COLOR = BaseColors.DARK_COLOR.getColor();
+
+    private static final Color FONT_COLOR =  BaseColors.FONT_COLOR.getColor();
+
+    private static final Color LIGHT_COLOR  = BaseColors.LIGHT_COLOR.getColor();
+
+    private static final Color LIGHT_COLOR2 = BaseColors.LIGHT_COLOR2.getColor();
+
+    private static final Font SMALL_FONT = BaseFonts.SMALL_FONT.getFont();
+
+
+    private static final GamePanel  INSTANCE = new GamePanel();
+
+    private GameController gameController = GameController.getInstance();
+
+    private PaintController paintController = PaintController.getInstance();
+
     private Timer timer;
     private GamePanel(){
         this.setPreferredSize(new Dimension(PANEL_WIDTH, PANEL_HEIGHT));
-        this.setBackground(Color.BLACK);
-        timer = new Timer(500, this);
+        this.setBackground(DARK_COLOR);
+        timer = new Timer(gameController.getGameSpeed(), this);
         timer.start();
     }
 
@@ -34,12 +47,38 @@ public class GamePanel extends JPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-
+        gameController.start();
+        repaint();
     }
 
     @Override
-    public void paint(Graphics g){
+    public void paint(Graphics g) {
+        super.paint(g);
+        g.translate(BORDER_SIZE, BORDER_SIZE);
+        g.setColor(DARK_COLOR.darker());
+        g.fillRoundRect(0, 0, TILE_SIZE * COLUMNS_COUNT, TILE_SIZE * ROW_COUNT, 10, 10);
 
+        if (!gameController.isGameRunning()) {
+            paintController.paintTetrisView(g);
+
+        } else if (gameController.isGameRunning()) {
+            g.setColor(LIGHT_COLOR2);
+            for (int x = 0; x < COLUMNS_COUNT; x++) {
+                for (int y = 0; y < ROW_COUNT; y++) {
+                    if (y > 0) g.drawLine(0, y * TILE_SIZE, TILE_SIZE * COLUMNS_COUNT, y * TILE_SIZE);
+                    if (x > 0) g.drawLine(x * TILE_SIZE, 0, x * TILE_SIZE, TILE_SIZE * ROW_COUNT);
+                }
+            }
+            paintController.paintGameMas(gameController.getGameMas(), g);
+            paintController.paintShape(gameController.getCurrentShape(), g);
+
+            if (gameController.isPaused() && !gameController.isGameOver()) {
+                paintController.paintPauseView(g);
+
+            } else if (gameController.isGameOver()) {
+                paintController.paintGameOverView(g);
+            }
+        }
     }
     public Timer getTimer() {
         return timer;

@@ -1,5 +1,6 @@
 package controller;
 
+
 import main.BaseColors;
 import main.BaseFonts;
 import main.GamePanel;
@@ -7,6 +8,10 @@ import main.LeftPanel;
 import object.Player;
 import object.Tile;
 import object.TileColor;
+
+import main.GamePanel;
+import object.Tile;
+
 
 import java.awt.*;
 
@@ -99,6 +104,7 @@ public class PaintController {
     }
 
     public void paintPauseView(Graphics g) {
+
         Color color = BaseColors.PAUSE_COLOR.getColor();
         String pausedGame = "Press P to resume.";
         int tileSize = 10;
@@ -317,6 +323,13 @@ public class PaintController {
         Polygon polygon = new Polygon(pointsX, pointsY, points);
         g.fillPolygon(polygon);
     }
+
+    }
+
+    public void paintGameOverView(Graphics g) {
+    }
+    public void paintTetrisView(Graphics g) {}
+
 
     public void setShowRecordNameInput(boolean b) {
         isShowRecordNameInput = b;

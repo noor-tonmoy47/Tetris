@@ -1,11 +1,13 @@
 package controller;
 
-<<<<<<< Updated upstream
-=======
+
 import main.GamePanel;
 import main.LeftPanel;
 import object.Figure;
->>>>>>> Stashed changes
+
+import main.LeftPanel;
+import object.Figure;
+
 import object.Player;
 import object.Tile;
 
@@ -58,10 +60,11 @@ public class GameController {
     public static boolean isTileEmpty(Tile tile) {
         return tile == null;
     }
-<<<<<<< Updated upstream
-=======
 
-    public void start() {
+
+
+    public void start(){
+
         if (!isGameOver && isGameRunning) {
             if (!isPaused) {
                 if (canShapeStepDown(currentShape)) {
@@ -90,6 +93,7 @@ public class GameController {
         } else writeShapeToGameMas(currentShape);
     }
 
+
     public void resetGame() {
         gameMas = new Tile[GamePanel.getRowCount()][GamePanel.getColumnsCount()];
         currentShape = Figure.getRandomFigure();
@@ -104,6 +108,7 @@ public class GameController {
         lines = 0;
         level = 0;
     }
+
 
     private void updateNextShapes() {
         nextShape0 = nextShape1;
@@ -122,7 +127,15 @@ public class GameController {
         return false;
     }
 
-    private void saveHighScoresToFile() {
+
+    public void saveHighScoresToFile() {
+        try (FileOutputStream fileOutputStream = new FileOutputStream(highScoresPath);
+             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream)) {
+            objectOutputStream.writeObject(highScores);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     private void writeShapeToGameMas(Tile[][] currentShape) {
@@ -131,7 +144,7 @@ public class GameController {
     public boolean canShapeStepDown(Tile[][] currentShape) {
         return false;
     }
->>>>>>> Stashed changes
+
 
     private void initHighScores() {
         try (FileInputStream fileInputStream = new FileInputStream(highScoresPath);
@@ -274,8 +287,7 @@ public class GameController {
     public void setNextShape2(Tile[][] nextShape2) {
         this.nextShape2 = nextShape2;
     }
-<<<<<<< Updated upstream
-=======
+
 
     public boolean canMoveShape(Direction left, Tile[][] currentShape) {
         return false;
@@ -286,5 +298,7 @@ public class GameController {
 
     public void rotate(Tile[][] currentShape) {
     }
->>>>>>> Stashed changes
+
+
+   
 }
