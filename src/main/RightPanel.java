@@ -6,31 +6,26 @@ import javax.swing.*;
 import java.awt.*;
 
 public class RightPanel extends JPanel {
-    public static final RightPanel INSTANCE = new RightPanel();
     public static final int TILE_SIZE = GamePanel.TILE_SIZE;
     public static final int BORDER_SIZE = GamePanel.BORDER_SIZE;
-    public static final int PANEL_WIDTH = TILE_SIZE * 5 + BORDER_SIZE * 2;
+    public static final int PANEL_WIDTH = GamePanel.TILE_SIZE * 5 + BORDER_SIZE * 2;
     public static final int PANEL_HEIGHT = GamePanel.PANEL_HEIGHT;
-
     public static final Color DARK_COLOR = BaseColors.DARK_COLOR.getColor();
-
     public static final Color LIGHT_COLOR = BaseColors.LIGHT_COLOR.getColor();
-
     public static final Color FONT_COLOR = BaseColors.FONT_COLOR.getColor();
-
+    public static final RightPanel INSTANCE = new RightPanel();
     public static final Font SMALL_FONT = BaseFonts.SMALL_FONT.getFont();
-
     public static final Font LARGE_FONT = BaseFonts.LARGE_FONT.getFont();
-
     public static final Font FONT_FOR_ARROWS = new Font("Times New Roman", Font.PLAIN, 14);
 
-    private RightPanel(){
-        this.setPreferredSize(new Dimension(PANEL_WIDTH, PANEL_HEIGHT));
-        this.setBackground(DARK_COLOR);
+
+    private RightPanel() {
+        setPreferredSize(new Dimension(PANEL_WIDTH, PANEL_HEIGHT));
+        setBackground(DARK_COLOR);
     }
 
     @Override
-    public void paint(Graphics g){
+    public void paint(Graphics g) {
         super.paint(g);
         g.translate(BORDER_SIZE, BORDER_SIZE);
         g.setColor(LIGHT_COLOR);
@@ -78,7 +73,10 @@ public class RightPanel extends JPanel {
         g.drawString(" Drop", largeOffsetByX * 2, offsetByY);
         g.drawString(" P - Pause", largeOffsetByX, offsetByY += TILE_SIZE);
         g.drawString(" R - Restart", largeOffsetByX, offsetByY += TILE_SIZE);
+
+
     }
+
     public static RightPanel getInstance() {
         return INSTANCE;
     }

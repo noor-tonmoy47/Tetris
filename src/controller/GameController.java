@@ -13,41 +13,23 @@ import object.Tile;
 import java.io.*;
 
 public class GameController {
-
     private static final GameController INSTANCE = new GameController();
-
     private final int[] SCORES = {100, 300, 700, 1500};
-
     private final int gameSpeed = 500;
-
     private final int acceleration = 20;
-
     private Tile[][] currentShape;
-
     private Tile[][] nextShape0;
-
     private Tile[][] nextShape1;
-
     private Tile[][] nextShape2;
-
     private Tile[][] gameMas;
-
     private Player[] highScores;
-
     private String highScoresPath = "TETRIS_HighScore";
-
     private boolean isRecord;
-
     private boolean isPaused;
-
     private boolean isGameOver;
-
     private boolean isGameRunning;
-
     private int score;
-
     private int lines;
-
     private int level;
 
 
@@ -56,14 +38,24 @@ public class GameController {
         resetGame();
     }
 
-    public static boolean isTileEmpty(Tile tile) {
-        return tile == null;
+    public void resetGame() {
+        gameMas = new Tile[GamePanel.ROW_COUNT][GamePanel.COLUMNS_COUNT];
+        currentShape = Figure.getRandomFigure();
+        nextShape0 = Figure.getRandomFigure();
+        nextShape1 = Figure.getRandomFigure();
+        nextShape2 = Figure.getRandomFigure();
+        isRecord = false;
+        isPaused = false;
+        isGameRunning = false;
+        isGameOver = false;
+        score = 0;
+        lines = 0;
+        level = 1;
+
+
     }
 
-
-
-    public void start(){
-
+    public void start() {
         if (!isGameOver && isGameRunning) {
             if (!isPaused) {
                 if (canShapeStepDown(currentShape)) {
@@ -92,96 +84,14 @@ public class GameController {
         } else writeShapeToGameMas(currentShape);
     }
 
-
-    public void resetGame() {
-        gameMas = new Tile[GamePanel.ROW_COUNT][GamePanel.COLUMNS_COUNT];
-        currentShape = Figure.getRandomFigure();
-        nextShape0 = Figure.getRandomFigure();
-        nextShape1 = Figure.getRandomFigure();
-        nextShape2 = Figure.getRandomFigure();
-        isRecord = false;
-        isPaused = false;
-        isGameRunning = false;
-        isGameOver = false;
-        score = 0;
-        lines = 0;
-        level = 1;
-    }
-
-
-    private void updateNextShapes() {
+    public void updateNextShapes() {
         nextShape0 = nextShape1;
         nextShape1 = nextShape2;
         nextShape2 = Figure.getRandomFigure();
         LeftPanel.getInstance().repaint();
     }
 
-    private void scanAndClearRows(Tile[][] shape, Tile[][] tiles) {
-        int firstY = 0;
-        int lastY = 0;
-        int countFilledRows = -1;
-
-        for (Tile tile : shape[0]) {
-            if (!isTileEmpty(tile)) {
-                firstY = tile.getY();
-            }
-        }
-        for (Tile tile : shape[shape.length - 1]) {
-            if (!isTileEmpty(tile)) {
-                lastY = tile.getY();
-            }
-        }
-        for (int y = firstY; y < lastY + 1; y++) {
-            boolean rowIsFull = true;
-            for (int x = 0; x < tiles[y].length; x++) {
-                if (isTileEmpty(tiles[y][x])) {
-                    rowIsFull = false;
-                }
-            }
-            if (rowIsFull) {
-                clearRow(y, tiles);
-                countFilledRows++;
-                lines++;
-            }
-        }
-        if (countFilledRows > -1) {
-            level = 1 + lines / 10;
-            score += SCORES[countFilledRows];
-            if (gameSpeed + acceleration - acceleration * level >= 20) {
-                GamePanel.getInstance().getTimer().setDelay(gameSpeed + acceleration - acceleration * level);
-            }
-            RightPanel.getInstance().repaint();
-        }
-    }
-
-    private void clearRow(int y, Tile[][] tiles) {
-        Tile mas[] = new Tile[GamePanel.COLUMNS_COUNT];
-        tiles[y] = mas;
-        for (int y1 = 0; y1 < y; y1++) {
-            for (Tile tile : tiles[y1]) {
-                if (!isTileEmpty(tile)) tile.setY(tile.getY() + 1);
-            }
-        }
-        System.arraycopy(tiles, 0, tiles, 1, y);
-        Tile mas1[] = new Tile[GamePanel.COLUMNS_COUNT];
-        tiles[0] = mas1;
-    }
-
-    public void stepDownShape(Tile[][] shape) {
-        for (Tile[] shapeY : shape) {
-            for (Tile tile : shapeY) {
-                if (tile != null) {
-                    stepDownTile(tile);
-                }
-            }
-        }
-    }
-
-    private void stepDownTile(Tile tile) {
-        tile.setY(tile.getY() + 1);
-    }
-
-    private boolean gameOver() {
+    public boolean gameOver() {
         if (currentShape.length == 1) {
             for (int i = 3; i < 7; i++) {
                 if (!isTileEmpty(gameMas[0][i])) return true;
@@ -220,18 +130,7 @@ public class GameController {
         return false;
     }
 
-
-    public void saveHighScoresToFile() {
-        try (FileOutputStream fileOutputStream = new FileOutputStream(highScoresPath);
-             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream)) {
-            objectOutputStream.writeObject(highScores);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    public void writeShapeToGameMas(Tile[][] shape) {
+    public void writeShapeToGameMas(Tile shape[][]) {
         for (Tile[] aShape : shape) {
             for (Tile tile : aShape) {
                 if (tile != null) {
@@ -241,7 +140,58 @@ public class GameController {
         }
     }
 
-    public boolean canShapeStepDown(Tile[][] shape) {
+    public void scanAndClearRows(Tile shape[][], Tile tiles[][]) {
+        int firstY = 0;
+        int lastY = 0;
+        int countFilledRows = -1;
+
+        for (Tile tile : shape[0]) {
+            if (!isTileEmpty(tile)) {
+                firstY = tile.getY();
+            }
+        }
+        for (Tile tile : shape[shape.length - 1]) {
+            if (!isTileEmpty(tile)) {
+                lastY = tile.getY();
+            }
+        }
+        for (int y = firstY; y < lastY + 1; y++) {
+            boolean rowIsFull = true;
+            for (int x = 0; x < tiles[y].length; x++) {
+                if (isTileEmpty(tiles[y][x])) {
+                    rowIsFull = false;
+                }
+            }
+            if (rowIsFull) {
+                clearRow(y, tiles);
+                countFilledRows++;
+                lines++;
+            }
+        }
+        if (countFilledRows > -1) {
+            level = 1 + lines / 10;
+            score += SCORES[countFilledRows];
+            if (gameSpeed + acceleration - acceleration * level >= 20) {
+                GamePanel.getInstance().getTimer().setDelay(gameSpeed + acceleration - acceleration * level);
+            }
+            RightPanel.getInstance().repaint();
+        }
+    }
+
+    public void clearRow(int y, Tile tiles[][]) {
+        Tile mas[] = new Tile[GamePanel.COLUMNS_COUNT];
+        tiles[y] = mas;
+        for (int y1 = 0; y1 < y; y1++) {
+            for (Tile tile : tiles[y1]) {
+                if (!isTileEmpty(tile)) tile.setY(tile.getY() + 1);
+            }
+        }
+        System.arraycopy(tiles, 0, tiles, 1, y);
+        Tile mas1[] = new Tile[GamePanel.COLUMNS_COUNT];
+        tiles[0] = mas1;
+    }
+
+    public boolean canShapeStepDown(Tile shape[][]) {
         return !isShapeTouchGround(shape) && !isShapeTouchDownAnotherShape(shape);
     }
 
@@ -254,6 +204,7 @@ public class GameController {
         }
         return false;
     }
+
     public boolean isShapeTouchDownAnotherShape(Tile shape[][]) {
         for (int y = shape.length - 1; y > -1; y--) {
             for (int x = 0; x < shape[y].length; x++) {
@@ -264,178 +215,11 @@ public class GameController {
         return false;
     }
 
-
-    private void initHighScores() {
-        try (FileInputStream fileInputStream = new FileInputStream(highScoresPath);
-             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream)) {
-            highScores = (Player[]) objectInputStream.readObject();
-        } catch (FileNotFoundException e) {
-            try {
-                File file = new File(highScoresPath);
-                file.createNewFile();
-                highScores = new Player[8];
-                for (int i = 0; i < highScores.length; i++) {
-                    highScores[i] = new Player("---", 0);
-                }
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-
-        } catch (EOFException e) {
-            highScores = new Player[8];
-            for (int i = 0; i < highScores.length; i++) {
-                highScores[i] = new Player("---", 0);
-            }
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static GameController getInstance() {
-        return INSTANCE;
-    }
-
-    public int getScore() {
-        return score;
-    }
-
-    public void setScore(int score) {
-        this.score = score;
-    }
-
-    public int getLines() {
-        return lines;
-    }
-
-    public void setLines(int lines) {
-        this.lines = lines;
-    }
-
-    public int getLevel() {
-        return level;
-    }
-
-    public void setLevel(int level) {
-        this.level = level;
-    }
-
-    public boolean isPaused() {
-        return isPaused;
-    }
-
-    public void setPaused(boolean paused) {
-        isPaused = paused;
-    }
-
-    public boolean isGameOver() {
-        return isGameOver;
-    }
-
-    public void setGameOver(boolean gameOver) {
-        isGameOver = gameOver;
-    }
-
-    public boolean isGameRunning() {
-        return isGameRunning;
-    }
-
-    public void setGameRunning(boolean gameRunning) {
-        isGameRunning = gameRunning;
-    }
-
-    public Player[] getHighScores() {
-        return highScores;
-    }
-
-    public void setHighScores(Player[] highScores) {
-        this.highScores = highScores;
-    }
-
-    public boolean isRecord() {
-        return isRecord;
-    }
-
-    public void setRecord(boolean record) {
-        isRecord = record;
-    }
-
-    public int getAcceleration() {
-        return acceleration;
-    }
-
-    public int getGameSpeed() {
-        return gameSpeed;
-    }
-
-    public Tile[][] getGameMas() {
-        return gameMas;
-    }
-
-    public void setGameMas(Tile[][] gameMas) {
-        this.gameMas = gameMas;
-    }
-
-    public Tile[][] getCurrentShape() {
-        return currentShape;
-    }
-
-    public void setCurrentShape(Tile[][] currentShape) {
-        this.currentShape = currentShape;
-    }
-
-    public Tile[][] getNextShape0() {
-        return nextShape0;
-    }
-
-    public void setNextShape0(Tile[][] nextShape0) {
-        this.nextShape0 = nextShape0;
-    }
-
-    public Tile[][] getNextShape1() {
-        return nextShape1;
-    }
-
-    public void setNextShape1(Tile[][] nextShape1) {
-        this.nextShape1 = nextShape1;
-    }
-
-    public Tile[][] getNextShape2() {
-        return nextShape2;
-    }
-
-    public void setNextShape2(Tile[][] nextShape2) {
-        this.nextShape2 = nextShape2;
+    public static boolean isTileEmpty(Tile tile) {
+        return tile == null;
     }
 
 
-    public boolean canMoveShape(Direction direction, Tile[][] shape) {
-        if (isShapeTouchWall(direction, shape) || isShapeTouchAnotherShape(direction, shape)) {
-            return false;
-        }
-        return true;    }
-
-    public boolean isShapeTouchAnotherShape(Direction direction, Tile shape[][]) {
-        switch (direction) {
-            case LEFT:
-                for (Tile[] shapeY : shape) {
-                    for (Tile tile : shapeY) {
-                        if (!isTileEmpty(tile) && !isTileEmpty(gameMas[tile.getY()][tile.getX() + direction.getX()]))
-                            return true;
-                    }
-                }
-            case RIGHT:
-                for (Tile[] shapeY : shape) {
-                    for (int x = shapeY.length - 1; x > -1; x--) {
-                        if (!isTileEmpty(shapeY[x])) {
-                            Tile tile = shapeY[x];
-                            if (!isTileEmpty(gameMas[tile.getY()][tile.getX() + direction.getX()]))
-                                return true;
-                        }
-                    }
-                }
-        }
-        return false;
-    }
     public boolean isShapeTouchWall(Direction direction, Tile shape[][]) {
         switch (direction) {
             case LEFT:
@@ -455,15 +239,9 @@ public class GameController {
         }
         return false;
     }
-    public void move(Direction direction, Tile[][] shape) {
-        for (Tile shapeY[] : shape) {
-            for (Tile tile : shapeY) {
-                if (!isTileEmpty(tile)) tile.setX(tile.getX() + direction.getX());
-            }
-        }
-    }
 
-    public void rotate(Tile[][] shape) {
+    public void rotate(Tile shape[][]) {
+
         if (shape.length == 1 && shape[0][1].getY() < GamePanel.ROW_COUNT - 2 && shape[0][1].getY() > 0 &&
                 isTileEmpty(gameMas[shape[0][1].getY() + 1][shape[0][1].getX()]) &&
                 isTileEmpty(gameMas[shape[0][1].getY() + 2][shape[0][1].getX()]) &&
@@ -652,7 +430,41 @@ public class GameController {
                 setCurrentShape(newShape);
             }
         }
+    }
 
+    private void initHighScores() {
+        try (FileInputStream fileInputStream = new FileInputStream(highScoresPath);
+             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream)) {
+            highScores = (Player[]) objectInputStream.readObject();
+        } catch (FileNotFoundException e) {
+            try {
+                File file = new File(highScoresPath);
+                file.createNewFile();
+                highScores = new Player[8];
+                for (int i = 0; i < highScores.length; i++) {
+                    highScores[i] = new Player("---", 0);
+                }
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+
+        } catch (EOFException e) {
+            highScores = new Player[8];
+            for (int i = 0; i < highScores.length; i++) {
+                highScores[i] = new Player("---", 0);
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void saveHighScoresToFile() {
+        try (FileOutputStream fileOutputStream = new FileOutputStream(highScoresPath);
+             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream)) {
+            objectOutputStream.writeObject(highScores);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void moveTiles(int x, int y, int i, int j, Tile[] tiles, Tile[][] newShape) {
@@ -668,6 +480,180 @@ public class GameController {
         }
     }
 
+    /**
+     * Check if we can move our current shape LEFT or RIGHT.
+     */
+    public boolean canMoveShape(Direction direction, Tile shape[][]) {
+        if (isShapeTouchWall(direction, shape) || isShapeTouchAnotherShape(direction, shape)) {
+            return false;
+        }
+        return true;
+    }
 
-   
+    /**
+     * Check if our current shape touch LEFT or RIGHT another shape.
+     */
+    public boolean isShapeTouchAnotherShape(Direction direction, Tile shape[][]) {
+        switch (direction) {
+            case LEFT:
+                for (Tile[] shapeY : shape) {
+                    for (Tile tile : shapeY) {
+                        if (!isTileEmpty(tile) && !isTileEmpty(gameMas[tile.getY()][tile.getX() + direction.getX()]))
+                            return true;
+                    }
+                }
+            case RIGHT:
+                for (Tile[] shapeY : shape) {
+                    for (int x = shapeY.length - 1; x > -1; x--) {
+                        if (!isTileEmpty(shapeY[x])) {
+                            Tile tile = shapeY[x];
+                            if (!isTileEmpty(gameMas[tile.getY()][tile.getX() + direction.getX()]))
+                                return true;
+                        }
+                    }
+                }
+        }
+        return false;
+    }
+
+    /**
+     * Move our current shape LEFT or RIGHT.
+     */
+    public void move(Direction direction, Tile shape[][]) {
+        for (Tile shapeY[] : shape) {
+            for (Tile tile : shapeY) {
+                if (!isTileEmpty(tile)) tile.setX(tile.getX() + direction.getX());
+            }
+        }
+    }
+
+    public void stepDownShape(Tile shape[][]) {
+        for (Tile[] shapeY : shape) {
+            for (Tile tile : shapeY) {
+                if (tile != null) {
+                    stepDownTile(tile);
+                }
+            }
+        }
+    }
+
+    public void stepDownTile(Tile tile) {
+        tile.setY(tile.getY() + 1);
+    }
+
+    public static GameController getInstance() {
+        return INSTANCE;
+    }
+
+    public Tile[][] getGameMas() {
+        return gameMas;
+    }
+
+    public void setGameMas(Tile[][] gameMas) {
+        this.gameMas = gameMas;
+    }
+
+    public Tile[][] getCurrentShape() {
+        return currentShape;
+    }
+
+    public void setCurrentShape(Tile[][] currentShape) {
+        this.currentShape = currentShape;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
+    }
+
+    public int getLines() {
+        return lines;
+    }
+
+    public void setLines(int lines) {
+        this.lines = lines;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
+    public boolean isPaused() {
+        return isPaused;
+    }
+
+    public void setPaused(boolean paused) {
+        isPaused = paused;
+    }
+
+    public boolean isGameOver() {
+        return isGameOver;
+    }
+
+    public void setGameOver(boolean gameOver) {
+        isGameOver = gameOver;
+    }
+
+    public Tile[][] getNextShape0() {
+        return nextShape0;
+    }
+
+    public void setNextShape0(Tile[][] nextShape0) {
+        this.nextShape0 = nextShape0;
+    }
+
+    public Tile[][] getNextShape1() {
+        return nextShape1;
+    }
+
+    public void setNextShape1(Tile[][] nextShape1) {
+        this.nextShape1 = nextShape1;
+    }
+
+    public Tile[][] getNextShape2() {
+        return nextShape2;
+    }
+
+    public void setNextShape2(Tile[][] nextShape2) {
+        this.nextShape2 = nextShape2;
+    }
+
+    public boolean isGameRunning() {
+        return isGameRunning;
+    }
+
+    public void setGameRunning(boolean gameRunning) {
+        isGameRunning = gameRunning;
+    }
+
+    public int getGameSpeed() {
+        return gameSpeed;
+    }
+
+    public int getAcceleration() {
+        return acceleration;
+    }
+
+    public boolean isRecord() {
+        return isRecord;
+    }
+
+    public void setRecord(boolean record) {
+        isRecord = record;
+    }
+
+    public Player[] getHighScores() {
+        return highScores;
+    }
+
+    public void setHighScores(Player[] highScores) {
+        this.highScores = highScores;
+    }
 }

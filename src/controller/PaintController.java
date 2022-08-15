@@ -17,9 +17,7 @@ import object.Tile;
 import java.awt.*;
 
 public class PaintController {
-
     private static final PaintController INSTANCE = new PaintController();
-
     private final int[][] tetrisView = {
             {1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1,},
             {0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0,},
@@ -27,7 +25,6 @@ public class PaintController {
             {0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1,},
             {0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1,},
     };
-
     private final int[][] pauseView = {
             {0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 1, 1, 0},
             {1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1},
@@ -35,7 +32,6 @@ public class PaintController {
             {1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1},
             {1, 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 0},
     };
-
     private final int[][] gameOverView = {
             {0, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1},
             {1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0},
@@ -53,31 +49,28 @@ public class PaintController {
     };
     private boolean isShowRecordNameInput = false;
 
-    private PaintController(){
 
+    private PaintController() {
     }
 
-    public void moveAndPaintShape(int x, int pixelsByX, int y, int pixelsByY, Tile[][] shape, Graphics g){
-        for(Tile[] shapeY : shape){
-            for(Tile tile : shapeY){
-                if(tile != null) moveAndPaintTile(x, pixelsByX, y, pixelsByY, tile, g);
-            }
-        }
+    public void paintTile(Tile tile, Graphics g) {
+        int tileSize = GamePanel.TILE_SIZE;
+        g.setColor(tile.getTileColor());
+        g.fill3DRect(tile.getX() * tileSize, tile.getY() * tileSize, tileSize, tileSize, true);
     }
 
-    private void moveAndPaintTile(int x, int pixelsByX, int y, int pixelsByY, Tile tile, Graphics g) {
+    public void paintTile(int x, int y, int shiftByY, int shiftByX, int tileSize, Color color, Graphics g) {
+        g.setColor(color);
+        g.fill3DRect(x * tileSize + shiftByX, y * tileSize + shiftByY, tileSize, tileSize, true);
+    }
+
+    public void moveAndPaintTile(int x, int pixelsByX, int y, int pixelsByY, Tile tile, Graphics g) {
         int tileSize = GamePanel.TILE_SIZE;
         g.setColor(tile.getTileColor());
         g.fill3DRect((tile.getX() + x) * tileSize + pixelsByX, (tile.getY() + y) * tileSize + pixelsByY, tileSize, tileSize, true);
     }
 
-    public static PaintController getInstance(){
-        return INSTANCE;
-    }
-
-
-
-    public void paintGameMas(Tile[][] gameMas, Graphics g) {
+    public void paintGameMas(Tile gameMas[][], Graphics g) {
         for (Tile[] gameMasY : gameMas) {
             for (Tile tile : gameMasY) {
                 if (tile != null) paintTile(tile, g);
@@ -93,70 +86,12 @@ public class PaintController {
         }
     }
 
-    private void paintTile(Tile tile, Graphics g) {
-        int tileSize = GamePanel.TILE_SIZE;
-        g.setColor(tile.getTileColor());
-        g.fill3DRect(tile.getX() * tileSize, tile.getY() * tileSize, tileSize, tileSize, true);
-    }
-
-    public void paintTile(int x, int y, int shiftByY, int shiftByX, int tileSize, Color color, Graphics g) {
-        g.setColor(color);
-        g.fill3DRect(x * tileSize + shiftByX, y * tileSize + shiftByY, tileSize, tileSize, true);
-    }
-
-    public void paintPauseView(Graphics g) {
-
-        Color color = BaseColors.PAUSE_COLOR.getColor();
-        String pausedGame = "Press P to resume.";
-        int tileSize = 10;
-        int rows = pauseView.length;
-        int columns = pauseView[0].length;
-        int smallShiftByY = 12;
-        int shiftByY = GamePanel.TILE_SIZE * 4 + smallShiftByY;
-        int shiftByX = 11;
-        int shiftByYForText = shiftByY + GamePanel.TILE_SIZE * 4 + 5;
-        int shiftByXForText = GamePanel.TILE_SIZE * 3;
-
-
-        g.setColor(BaseColors.DARK_TRANSPARENT_COLOR.getColor());
-        g.fillRoundRect(0, 0, GamePanel.PANEL_WIDTH - GamePanel.BORDER_SIZE * 2, GamePanel.PANEL_HEIGHT - GamePanel.BORDER_SIZE * 2, 10, 10);
-        g.setColor(BaseColors.DARK_COLOR.getColor().darker());
-        g.fillRect(0, shiftByY - smallShiftByY + 1, GamePanel.PANEL_WIDTH - GamePanel.BORDER_SIZE * 2, GamePanel.TILE_SIZE * 3 - 1);
-        g.fillRect(shiftByXForText - GamePanel.TILE_SIZE + 1, shiftByY + GamePanel.TILE_SIZE * 4 - smallShiftByY + 1,
-                GamePanel.TILE_SIZE * 6 - 1, GamePanel.TILE_SIZE - 1);
-        g.setColor(BaseColors.LIGHT_COLOR.getColor());
-        g.drawRect(-1, shiftByY - smallShiftByY, GamePanel.PANEL_WIDTH - GamePanel.BORDER_SIZE * 2 + 1, GamePanel.TILE_SIZE * 3);
-        g.drawRect(shiftByXForText - GamePanel.TILE_SIZE, shiftByY + GamePanel.TILE_SIZE * 4 - smallShiftByY,
-                GamePanel.TILE_SIZE * 6, GamePanel.TILE_SIZE);
-        g.setColor(BaseColors.FONT_COLOR.getColor());
-        g.drawString(pausedGame, shiftByXForText, shiftByYForText);
-
-        for (int y = 0; y < rows; y++) {
-            for (int x = 0; x < columns; x++) {
-                if (pauseView[y][x] == 1) {
-                    paintTile(x, y, shiftByY, shiftByX, tileSize, color, g);
-                }
+    public void moveAndPaintShape(int x, int pixelsByX, int y, int pixelsByY, Tile[][] shape, Graphics g) {
+        for (Tile[] shapeY : shape) {
+            for (Tile tile : shapeY) {
+                if (tile != null) moveAndPaintTile(x, pixelsByX, y, pixelsByY, tile, g);
             }
         }
-        int x1 = 0;
-        for (int x = 0; x < 5; x++) {
-            int[] yPoints = {shiftByY + tileSize, shiftByY + tileSize, shiftByY};
-            int[] xPoints = {shiftByX + x1 * tileSize, shiftByX + tileSize + x1 * tileSize, shiftByX + tileSize + x1 * tileSize};
-            paintPolygon(3, yPoints, xPoints, color, g);
-            g.setColor(color.darker());
-            g.drawLine(xPoints[0] + 1, yPoints[0], xPoints[1] - 1, yPoints[1]);
-            g.drawLine(xPoints[2] - 1, yPoints[2] + 2, xPoints[1] - 1, yPoints[1] - 1);
-            x1 = x1 + 4;
-        }
-        int[] yPoints = {shiftByY, shiftByY + tileSize, shiftByY + tileSize};
-        int[] xPoints = {shiftByX + tileSize * 22, shiftByX + tileSize * 22, shiftByX + tileSize * 23};
-        paintPolygon(3, yPoints, xPoints, color, g);
-        g.setColor(color.darker());
-        g.drawLine(xPoints[2] - 1, yPoints[2], xPoints[1], yPoints[1]);
-
-        yPoints = new int[]{shiftByY + tileSize * 4, shiftByY + tileSize * 5, shiftByY + tileSize * 4};
-        xPoints = new int[]{shiftByX + tileSize * 22, shiftByX + tileSize * 22, shiftByX + tileSize * 23};
-        paintPolygon(3, yPoints, xPoints, color, g);
     }
 
     public void paintGameOverView(Graphics g) {
@@ -230,6 +165,62 @@ public class PaintController {
         g.setColor(BaseColors.FONT_COLOR.getColor());
         g.drawString("Press Enter to continue.", GamePanel.TILE_SIZE * 2 + 9, shiftByYForText + GamePanel.TILE_SIZE * 4);
         g.drawString("Press R to restart.", GamePanel.TILE_SIZE * 3, shiftByYForText + GamePanel.TILE_SIZE * 5);
+
+
+    }
+
+    public void paintPauseView(Graphics g) {
+        Color color = BaseColors.PAUSE_COLOR.getColor();
+        String pausedGame = "Press P to resume.";
+        int tileSize = 10;
+        int rows = pauseView.length;
+        int columns = pauseView[0].length;
+        int smallShiftByY = 12;
+        int shiftByY = GamePanel.TILE_SIZE * 4 + smallShiftByY;
+        int shiftByX = 11;
+        int shiftByYForText = shiftByY + GamePanel.TILE_SIZE * 4 + 5;
+        int shiftByXForText = GamePanel.TILE_SIZE * 3;
+
+
+        g.setColor(BaseColors.DARK_TRANSPARENT_COLOR.getColor());
+        g.fillRoundRect(0, 0, GamePanel.PANEL_WIDTH - GamePanel.BORDER_SIZE * 2, GamePanel.PANEL_HEIGHT - GamePanel.BORDER_SIZE * 2, 10, 10);
+        g.setColor(BaseColors.DARK_COLOR.getColor().darker());
+        g.fillRect(0, shiftByY - smallShiftByY + 1, GamePanel.PANEL_WIDTH - GamePanel.BORDER_SIZE * 2, GamePanel.TILE_SIZE * 3 - 1);
+        g.fillRect(shiftByXForText - GamePanel.TILE_SIZE + 1, shiftByY + GamePanel.TILE_SIZE * 4 - smallShiftByY + 1,
+                GamePanel.TILE_SIZE * 6 - 1, GamePanel.TILE_SIZE - 1);
+        g.setColor(BaseColors.LIGHT_COLOR.getColor());
+        g.drawRect(-1, shiftByY - smallShiftByY, GamePanel.PANEL_WIDTH - GamePanel.BORDER_SIZE * 2 + 1, GamePanel.TILE_SIZE * 3);
+        g.drawRect(shiftByXForText - GamePanel.TILE_SIZE, shiftByY + GamePanel.TILE_SIZE * 4 - smallShiftByY,
+                GamePanel.TILE_SIZE * 6, GamePanel.TILE_SIZE);
+        g.setColor(BaseColors.FONT_COLOR.getColor());
+        g.drawString(pausedGame, shiftByXForText, shiftByYForText);
+
+        for (int y = 0; y < rows; y++) {
+            for (int x = 0; x < columns; x++) {
+                if (pauseView[y][x] == 1) {
+                    paintTile(x, y, shiftByY, shiftByX, tileSize, color, g);
+                }
+            }
+        }
+        int x1 = 0;
+        for (int x = 0; x < 5; x++) {
+            int[] yPoints = {shiftByY + tileSize, shiftByY + tileSize, shiftByY};
+            int[] xPoints = {shiftByX + x1 * tileSize, shiftByX + tileSize + x1 * tileSize, shiftByX + tileSize + x1 * tileSize};
+            paintPolygon(3, yPoints, xPoints, color, g);
+            g.setColor(color.darker());
+            g.drawLine(xPoints[0] + 1, yPoints[0], xPoints[1] - 1, yPoints[1]);
+            g.drawLine(xPoints[2] - 1, yPoints[2] + 2, xPoints[1] - 1, yPoints[1] - 1);
+            x1 = x1 + 4;
+        }
+        int[] yPoints = {shiftByY, shiftByY + tileSize, shiftByY + tileSize};
+        int[] xPoints = {shiftByX + tileSize * 22, shiftByX + tileSize * 22, shiftByX + tileSize * 23};
+        paintPolygon(3, yPoints, xPoints, color, g);
+        g.setColor(color.darker());
+        g.drawLine(xPoints[2] - 1, yPoints[2], xPoints[1], yPoints[1]);
+
+        yPoints = new int[]{shiftByY + tileSize * 4, shiftByY + tileSize * 5, shiftByY + tileSize * 4};
+        xPoints = new int[]{shiftByX + tileSize * 22, shiftByX + tileSize * 22, shiftByX + tileSize * 23};
+        paintPolygon(3, yPoints, xPoints, color, g);
     }
 
     public void paintTetrisView(Graphics g) {
@@ -325,7 +316,15 @@ public class PaintController {
         g.fillPolygon(polygon);
     }
 
-    public void setShowRecordNameInput(boolean b) {
-        isShowRecordNameInput = b;
+    public static PaintController getInstance() {
+        return INSTANCE;
+    }
+
+    public boolean isShowRecordNameInput() {
+        return isShowRecordNameInput;
+    }
+
+    public void setShowRecordNameInput(boolean showRecordNameInput) {
+        isShowRecordNameInput = showRecordNameInput;
     }
 }

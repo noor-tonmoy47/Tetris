@@ -14,42 +14,27 @@ public class GamePanel extends JPanel implements ActionListener {
     public static final int BORDER_SIZE = 5;
     public static final int TILE_SIZE = 25;
     public static final int PANEL_WIDTH = TILE_SIZE * COLUMNS_COUNT + BORDER_SIZE * 2;
-
     public static final int PANEL_HEIGHT = TILE_SIZE * ROW_COUNT + BORDER_SIZE * 2;
     private static final Color DARK_COLOR = BaseColors.DARK_COLOR.getColor();
-
-    private static final Color FONT_COLOR =  BaseColors.FONT_COLOR.getColor();
-
-    private static final Color LIGHT_COLOR  = BaseColors.LIGHT_COLOR.getColor();
-
+    private static final Color FONT_COLOR = BaseColors.FONT_COLOR.getColor();
+    private static final Color LIGHT_COLOR = BaseColors.LIGHT_COLOR.getColor();
     private static final Color LIGHT_COLOR2 = BaseColors.LIGHT_COLOR2.getColor();
-
+    private static final GamePanel INSTANCE = new GamePanel();
     private static final Font SMALL_FONT = BaseFonts.SMALL_FONT.getFont();
-
-
-    private static final GamePanel  INSTANCE = new GamePanel();
-
     private GameController gameController = GameController.getInstance();
-
     private PaintController paintController = PaintController.getInstance();
-
     private Timer timer;
-    private GamePanel(){
-        this.setPreferredSize(new Dimension(PANEL_WIDTH, PANEL_HEIGHT));
-        this.setBackground(DARK_COLOR);
+    private JTextField textField = new JTextField(10);
+
+    private GamePanel() {
+        setPreferredSize(new Dimension(PANEL_WIDTH, PANEL_HEIGHT));
+        setBackground(DARK_COLOR);
         timer = new Timer(gameController.getGameSpeed(), this);
+//        timer = new Timer(0, this);
         timer.start();
+
     }
 
-    public static GamePanel getInstance(){
-        return INSTANCE ;
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        gameController.start();
-        repaint();
-    }
 
     @Override
     public void paint(Graphics g) {
@@ -83,8 +68,12 @@ public class GamePanel extends JPanel implements ActionListener {
         g.drawRoundRect(0, 0, TILE_SIZE * COLUMNS_COUNT, TILE_SIZE * ROW_COUNT, 10, 10);
         g.drawRoundRect(-1, -1, TILE_SIZE * COLUMNS_COUNT + 2, TILE_SIZE * ROW_COUNT + 2, 10, 10);
     }
-    public Timer getTimer() {
-        return timer;
+
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        gameController.start();
+        repaint();
     }
 
     public static int getRowCount() {
@@ -115,11 +104,23 @@ public class GamePanel extends JPanel implements ActionListener {
         return DARK_COLOR;
     }
 
-//    public static Color getLightColor() {
-//        return LIGHT_COLOR;
-//    }
-//
-//    public static Color getLightColor2() {
-//        return LIGHT_COLOR2;
-//    }
+    public static Color getLightColor() {
+        return LIGHT_COLOR;
+    }
+
+    public static Color getLightColor2() {
+        return LIGHT_COLOR2;
+    }
+
+    public Timer getTimer() {
+        return timer;
+    }
+
+    public void setTimer(Timer timer) {
+        this.timer = timer;
+    }
+
+    public static GamePanel getInstance() {
+        return INSTANCE;
+    }
 }
