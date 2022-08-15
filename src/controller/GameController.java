@@ -1,7 +1,13 @@
 package controller;
 
+
+import main.GamePanel;
 import main.LeftPanel;
 import object.Figure;
+
+import main.LeftPanel;
+import object.Figure;
+
 import object.Player;
 import object.Tile;
 
@@ -46,14 +52,19 @@ public class GameController {
     private int level;
 
 
-    private GameController(){
+    private GameController() {
         initHighScores();
+        resetGame();
     }
 
-    public static boolean isTileEmpty(Tile tile){
+    public static boolean isTileEmpty(Tile tile) {
         return tile == null;
     }
+
+
+
     public void start(){
+
         if (!isGameOver && isGameRunning) {
             if (!isPaused) {
                 if (canShapeStepDown(currentShape)) {
@@ -82,6 +93,23 @@ public class GameController {
         } else writeShapeToGameMas(currentShape);
     }
 
+
+    public void resetGame() {
+        gameMas = new Tile[GamePanel.getRowCount()][GamePanel.getColumnsCount()];
+        currentShape = Figure.getRandomFigure();
+        nextShape0 = Figure.getRandomFigure();
+        nextShape1 = Figure.getRandomFigure();
+        nextShape2 = Figure.getRandomFigure();
+        isRecord = false;
+        isPaused = false;
+        isGameRunning = false;
+        isGameOver = false;
+        score = 0;
+        lines = 0;
+        level = 0;
+    }
+
+
     private void updateNextShapes() {
         nextShape0 = nextShape1;
         nextShape1 = nextShape2;
@@ -99,6 +127,7 @@ public class GameController {
         return false;
     }
 
+
     public void saveHighScoresToFile() {
         try (FileOutputStream fileOutputStream = new FileOutputStream(highScoresPath);
              ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream)) {
@@ -106,6 +135,7 @@ public class GameController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
     }
 
     private void writeShapeToGameMas(Tile[][] currentShape) {
@@ -114,6 +144,7 @@ public class GameController {
     public boolean canShapeStepDown(Tile[][] currentShape) {
         return false;
     }
+
 
     private void initHighScores() {
         try (FileInputStream fileInputStream = new FileInputStream(highScoresPath);
@@ -141,7 +172,7 @@ public class GameController {
         }
     }
 
-    public static GameController getInstance(){
+    public static GameController getInstance() {
         return INSTANCE;
     }
 
@@ -257,6 +288,7 @@ public class GameController {
         this.nextShape2 = nextShape2;
     }
 
+
     public boolean canMoveShape(Direction left, Tile[][] currentShape) {
         return false;
     }
@@ -267,6 +299,6 @@ public class GameController {
     public void rotate(Tile[][] currentShape) {
     }
 
-    public void resetGame() {
-    }
+
+   
 }
