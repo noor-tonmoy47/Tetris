@@ -26,7 +26,7 @@ public class RightPanel extends JPanel {
 
     private RightPanel(){
         this.setPreferredSize(new Dimension(PANEL_WIDTH, PANEL_HEIGHT));
-        this.setBackground(Color.CYAN);
+        this.setBackground(DARK_COLOR);
     }
 
     @Override
