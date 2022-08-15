@@ -5,6 +5,7 @@ import main.BaseColors;
 import main.BaseFonts;
 import main.GamePanel;
 import main.LeftPanel;
+import main.newRecordDialogBox.EnterNameFrame;
 import object.Player;
 import object.Tile;
 import object.TileColor;
@@ -50,7 +51,7 @@ public class PaintController {
 
 
     };
-    private boolean isShowRecordNameInput;
+    private boolean isShowRecordNameInput = false;
 
     private PaintController(){
 
@@ -162,7 +163,7 @@ public class PaintController {
         Color color = BaseColors.GAME_OVER_COLOR.getColor();
         String newRecord = "New Record";
         String name = "";
-        int score = GameController.getINSTANCE().getScore();
+        int score = GameController.getInstance().getScore();
         int tileSize = 12;
         int rows = gameOverView.length;
         int columns = gameOverView[0].length;
@@ -323,13 +324,6 @@ public class PaintController {
         Polygon polygon = new Polygon(pointsX, pointsY, points);
         g.fillPolygon(polygon);
     }
-
-    }
-
-    public void paintGameOverView(Graphics g) {
-    }
-    public void paintTetrisView(Graphics g) {}
-
 
     public void setShowRecordNameInput(boolean b) {
         isShowRecordNameInput = b;

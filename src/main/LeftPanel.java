@@ -10,8 +10,6 @@ import java.awt.*;
 
 public class LeftPanel extends JPanel {
 
-
-
     public static final int ROW_COUNT = 9;
 
     public static final int COLUMNS_COUNT = 5;

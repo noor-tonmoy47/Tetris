@@ -61,7 +61,7 @@ public class GamePanel extends JPanel implements ActionListener {
         if (!gameController.isGameRunning()) {
             paintController.paintTetrisView(g);
 
-        } else if (gameController.isGameRunning()) {
+        } else {
             g.setColor(LIGHT_COLOR2);
             for (int x = 0; x < COLUMNS_COUNT; x++) {
                 for (int y = 0; y < ROW_COUNT; y++) {
@@ -79,6 +79,9 @@ public class GamePanel extends JPanel implements ActionListener {
                 paintController.paintGameOverView(g);
             }
         }
+        g.setColor(LIGHT_COLOR);
+        g.drawRoundRect(0, 0, TILE_SIZE * COLUMNS_COUNT, TILE_SIZE * ROW_COUNT, 10, 10);
+        g.drawRoundRect(-1, -1, TILE_SIZE * COLUMNS_COUNT + 2, TILE_SIZE * ROW_COUNT + 2, 10, 10);
     }
     public Timer getTimer() {
         return timer;

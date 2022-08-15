@@ -16,7 +16,7 @@ public class Figure {
             case O:
                 return new Tile[][]{
                         {new Tile(0, 4, TileColor.O.getColor()), new Tile(0, 5, TileColor.O.getColor())},
-                        {new Tile(1, 4, TileColor.O.getColor()), new Tile(0, 5, TileColor.O.getColor())}
+                        {new Tile(1, 4, TileColor.O.getColor()), new Tile(1, 5, TileColor.O.getColor())}
                 };
 
             case I:
@@ -27,7 +27,7 @@ public class Figure {
 
             case T:
                 return new Tile[][]{
-                        {null, new Tile(0, 5, TileColor.T.getColor())},
+                        {null, new Tile(0, 5, TileColor.T.getColor()), null},
                         {new Tile(1, 4, TileColor.T.getColor()), new Tile(1, 5, TileColor.T.getColor()), new Tile(1, 6, TileColor.T.getColor())}
                 };
 
@@ -69,19 +69,17 @@ public class Figure {
         return true;
     }
 
-    public static boolean isFirstColoumnIsFull(Tile[][] shape){
+    public static boolean isFirstColumnIsFull(Tile[][] shape){
         for (Tile[] shapeY : shape){
             if (GameController.isTileEmpty(shapeY[0])) return false;
         }
         return true;
     }
 
-    public static boolean isSecondColoumnIsFull(Tile[][] shape){
+    public static boolean isSecondColumnIsFull(Tile[][] shape){
         for (Tile[] shapeY : shape){
             if (GameController.isTileEmpty(shapeY[1])) return false;
         }
         return true;
     }
-
-
 }
